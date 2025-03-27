@@ -1,7 +1,7 @@
 import { FC } from "react";
 
 interface FileInputProps {
-  className?: string;
+  className?: string | number;
   onChange?: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }
 

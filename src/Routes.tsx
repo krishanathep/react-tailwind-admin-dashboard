@@ -1,5 +1,5 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router";
-import RequireAuth from "@auth-kit/react-router/RequireAuth";
+//import RequireAuth from "@auth-kit/react-router/RequireAuth";
 
 import SignIn from "./pages/AuthPages/SignIn";
 import SignUp from "./pages/AuthPages/SignUp";

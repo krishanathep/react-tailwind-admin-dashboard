@@ -2,30 +2,25 @@ import { useState } from "react";
 import { Link } from "react-router";
 import { ChevronLeftIcon, EyeCloseIcon, EyeIcon } from "../../icons";
 import { useForm } from "react-hook-form";
+import { useNavigate } from "react-router";
 import Label from "../form/Label";
-import Input from "../form/input/InputField";
+//import Input from "../form/input/InputField";
 import Checkbox from "../form/input/Checkbox";
-import Button from "../ui/button/Button";
+//import Button from "../ui/button/Button";
 import axios from "axios";
 
-//import useSignIn from 'react-auth-kit/hooks/useSignIn'
+import useSignIn from 'react-auth-kit/hooks/useSignIn'
 const REACT_APP_API =
   "https://full-stack-app.com/laravel_auth_jwt_api/public/api/auth/login";
 
-  interface LoginFormInputs {
-    email: string;
-    password: string;
-    rememberMe: boolean;
-  }
-
 export default function SignInForm() {
-  //const signIn = useSignIn();
+  const signIn = useSignIn();
+  const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [isChecked, setIsChecked] = useState(false);
   const {
     register,
     handleSubmit,
-    reset,
     formState: { errors },
   } = useForm();
 
@@ -33,6 +28,18 @@ export default function SignInForm() {
     try {
       await axios.post(REACT_APP_API, data).then((res) => {
         console.log(res);
+          if (
+            signIn({
+              auth: {
+                token: res.data.access_token,
+                type: "Bearer"
+
+              },
+              userState : res.data.user
+            })
+          ) {
+            navigate("/");
+          }
       });
     } catch (error) {
       console.error(error);
@@ -113,23 +120,31 @@ export default function SignInForm() {
                 </span>
               </div>
             </div>
-            <form>
+            <form onSubmit={handleSubmit(onSubmit)}>
               <div className="space-y-6">
                 <div>
                   <Label>
                     Email <span className="text-error-500">*</span>{" "}
                   </Label>
-                  <Input placeholder="info@gmail.com" />
+                  {/* <Input placeholder="info@gmail.com" /> */}
+                  <input type="text" {...register('email',{required:true})} />
+                  {errors.email && (
+                    <p className="text-danger">This field is required</p>
+                  )}
                 </div>
                 <div>
                   <Label>
                     Password <span className="text-error-500">*</span>{" "}
                   </Label>
                   <div className="relative">
-                    <Input
+                    {/* <Input
                       type={showPassword ? "text" : "password"}
                       placeholder="Enter your password"
-                    />
+                    /> */}
+                    <input type="password" {...register('password',{required:true})}/>
+                    {errors.password && (
+                      <p className="text-danger">This field is required</p>
+                    )}
                     <span
                       onClick={() => setShowPassword(!showPassword)}
                       className="absolute z-30 -translate-y-1/2 cursor-pointer right-4 top-1/2"
@@ -157,9 +172,10 @@ export default function SignInForm() {
                   </Link>
                 </div>
                 <div>
-                  <Button className="w-full" size="sm">
+                  {/* <Button className="w-full" size="sm">
                     Sign in
-                  </Button>
+                  </Button> */}
+                  <button type="submit">SUBMIT</button>
                 </div>
               </div>
             </form>
